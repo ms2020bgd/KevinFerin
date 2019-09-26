@@ -133,7 +133,7 @@ weather_data = {
 # - country (str): the city country
 # - date (str): the date
 # - temp (float): the temperature in °celsius (not °kelvin)
-def extract_data(data):
+def extract_data2(data):
     dictio = []
     for ville in data.keys(): 
         el = {}
@@ -144,7 +144,18 @@ def extract_data(data):
         dictio.append(el)
     return dictio
 
-
+def extract_data(data): 
+    result =[]
+    for city_name, city_weather_data in data.items() :
+        country = data[city_name]['metadata']['country']
+        for releve in city_weather_data['weather_list'] :
+            result.append({
+                    'name' : city_name,
+                    'country' : country,
+                    'date' : releve['dt_txt'],
+                    'temp' : releve['main']['temp']-273.15
+                    })
+    return result
 # End of exercices.
 
 
