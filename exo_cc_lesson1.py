@@ -1,6 +1,6 @@
 import math
 import unittest
-
+from collections import Counter
 
 # Given a string and a non-negative int n, return a larger string
 # that is n copies of the original string.
@@ -68,10 +68,9 @@ def number_to_digits(number):
 # moving it to the end of the word, and adding 'ay'.
 def pig_latin(text):
     words = text.split()
-    print(words)
     result = []
     for word in words : 
-        result += [(word[1:]+word[0]+'ay')]
+        result += [word[1:]+word[0]+'ay']
     return (' '.join(result)).capitalize()
 
 
@@ -81,14 +80,14 @@ def pig_latin(text):
 # and "FizzBuzz" instead of multiple of 15
 def fizzbuzz():
     for i in range(100): 
+        if (i%15==0): 
+            print("FizzBuzz")
         if (i%3==0): 
             print("Fizz")
-        elif (i%5==0): 
+        if (i%5==0): 
             print("Buzz")
-        elif (i%15==0): 
-            print("FizzBuzz")
         else : print(i)
-    return
+    
 
 
 weather_data = {
