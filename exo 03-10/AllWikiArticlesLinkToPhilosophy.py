@@ -65,7 +65,7 @@ def get_mean_dist(numberOfArticle):
         ## This is the url to get a random page of wikipedia
         urlFirstArticle = "https://fr.wikipedia.org/wiki/Special:Random"
         dist.append(get_distance(urlFirstArticle))
-    print ("La profondeur philosophique moyenne est ", np.mean(dist))
+    print ("La distance moyenne à l'article philosophie est ", np.mean(dist))
     
 
 urlFirstArticle = "https://fr.wikipedia.org/wiki/Axiome"
