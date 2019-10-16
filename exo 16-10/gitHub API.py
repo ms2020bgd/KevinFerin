@@ -28,17 +28,6 @@ def get_top_contrib (url) :
         dic[int(row.find("th").text.replace('#',''))]=rowDic
    
     return dic
-def get_repos_list(userName):
-    p,v = 1,True
-    jsons=[]
-    while(v) :
-        res = requests.get('https://api.github.com/users/'+userName+'/repos?page=%s' %p, headers=headers)
-        v = len(res.json())!=0
-        p+=1
-        if(v) :
-            jsons.append(res.json())
-    return jsons
-
 
 headers = {'Authorization': 'Token ba1495e0d4956dedc48cb93017474ff495053fb7'}
 
