@@ -62,6 +62,7 @@ def get_stars (dic) :
 #top_stars = get_stars(top_contrib)
 #print("End get star")
 
+
 #with open('result.json', 'w') as outfile:
 #    json.dump(top_stars, outfile)
 #print("Stored json")
@@ -78,6 +79,6 @@ for i in range (1,len(data['TotalStars'])+1):
     else : 
         l.append(0)
 data['mean_star']=l
-data.sort_values(by=['mean_star'],ascending =False)
+data = data.sort_values(by=['mean_star'],ascending =False)
 
 data.to_json("resultSortedByMeanValue.json")
