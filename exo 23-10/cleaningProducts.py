@@ -57,11 +57,9 @@ products.currency = products.currency.combine(products.price.str.split(' ').str[
 def func (row):
     try :
         if row["currency"]!='' :
-            return converter.convert(row["price"],row["currency"],'EUR')
-         
+            return converter.convert(row["price"],row["currency"],'EUR')   
         else : 
             return np.NaN
-
     except ValueError :
         return np.NaN
             
@@ -78,8 +76,19 @@ def getDifferentAllergie(products):
     df2 = pd.DataFrame(temp.values.tolist()).replace('',None)
     k=df2.values.flatten()
     k=k[k!=None]
-    return pd.Series(k).unique()
+    return temp,pd.Series(k).unique()
 
-uniqueAl = getDifferentAllergie(products)
+listeInfos,uniqueAl = getDifferentAllergie(products)
 
+def eq (l1,l2):
+    result=[]
+    for el in l2 : 
+        if el in l1 : 
+            result.append(True)
+        else : result.append(False)      
+    return result
 
+allergensMat = list(map(eq,listeInfos.values,[uniqueAl for i in range (len(listeInfos.values))]))
+allergenDF = pd.DataFrame(allergensMat,index=listeInfos.index,columns=uniqueAl)
+products=products.join(allergenDF)
+del products['infos']
