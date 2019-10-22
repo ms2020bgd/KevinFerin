@@ -11,11 +11,12 @@ import os,sys
 import pygeoip as geoIP
 import requests
 import numpy as np 
-import pycountry
+import pycountry as py 
+
 import PyCurrency_Converter
 import currency
 
-#currency.convert('USD','EUR',200)
+#get currency from IP 
 from currency_converter import CurrencyConverter
 converter= CurrencyConverter()
 pathname = os.path.dirname(__file__)
@@ -32,20 +33,17 @@ def getCountryFromIP (ip_adress):
 def getCurrencyFromCountry (country) :
     if (country != ''): 
         response = requests.get("https://restcountries.eu/rest/v2/alpha?codes="+country)
-        k =response.json()[0]["currencies"][0]["code"]
+        k = response.json()[0]["currencies"][0]["code"]
         return k
     else : 
         return ''
 
 from multiprocessing import Pool
 p = Pool(processes=8)
-countries = p.map(getCountryFromIP,products['ip_address'])
-currencies = p.map(getCurrencyFromCountry,countries)
+products['country'] = p.map(getCountryFromIP,products['ip_address'])
+products['currency'] = p.map(getCurrencyFromCountry,products["country"])
 
-products['country']=countries
-products['currency']=currencies
-
-
+#Cleaning 
 products.price = products.price.astype('str')
 products.price = products.price.str.split(' ').str[0]
 def take(x,y):
@@ -68,7 +66,7 @@ products["priceEuros"]=products.apply(lambda row : func(row),axis=1)
 products.priceEuros = products.priceEuros.astype(float)
 products.dropna(subset=['priceEuros'], inplace=True)
 
-
+#Separate the different allergens
 def getDifferentAllergie(products):
     temp = products.infos.str.lower().str.replace("ingredients:",'').str.replace("contains",'') \
     .str.replace("and",'').str.replace("contain",'').str.replace("may",'').str.replace(',','') \
@@ -92,3 +90,5 @@ allergensMat = list(map(eq,listeInfos.values,[uniqueAl for i in range (len(liste
 allergenDF = pd.DataFrame(allergensMat,index=listeInfos.index,columns=uniqueAl)
 products=products.join(allergenDF)
 del products['infos']
+
+
