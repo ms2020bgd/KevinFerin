@@ -65,30 +65,38 @@ def func (row):
 products["priceEuros"]=products.apply(lambda row : func(row),axis=1)
 products.priceEuros = products.priceEuros.astype(float)
 products.dropna(subset=['priceEuros'], inplace=True)
+products.infos=products.infos.str.lower().str.replace("ingredients:",'').str.replace("contains",'') \
+    .str.replace("and",'').str.replace("contain",'').str.replace("may",'').str.replace(',','') \
+    .str.replace('  ',' ').str.strip()
+    
+products=products.join(products.infos.str.get_dummies(' '))
+del products['infos']
+
+# Sans la fonction get_dummies bien mieux 
 
 #Separate the different allergens
-def getDifferentAllergie(products):
-    temp = products.infos.str.lower().str.replace("ingredients:",'').str.replace("contains",'') \
-    .str.replace("and",'').str.replace("contain",'').str.replace("may",'').str.replace(',','') \
-    .str.replace('  ',' ').str.strip().str.split(' ')
-    df2 = pd.DataFrame(temp.values.tolist()).replace('',None)
-    k=df2.values.flatten()
-    k=k[k!=None]
-    return temp,pd.Series(k).unique()
-
-listeInfos,uniqueAl = getDifferentAllergie(products)
-
-def eq (l1,l2):
-    result=[]
-    for el in l2 : 
-        if el in l1 : 
-            result.append(True)
-        else : result.append(False)      
-    return result
-
-allergensMat = list(map(eq,listeInfos.values,[uniqueAl for i in range (len(listeInfos.values))]))
-allergenDF = pd.DataFrame(allergensMat,index=listeInfos.index,columns=uniqueAl)
-products=products.join(allergenDF)
-del products['infos']
+#def getDifferentAllergie(products):
+#    temp = products.infos.str.lower().str.replace("ingredients:",'').str.replace("contains",'') \
+#    .str.replace("and",'').str.replace("contain",'').str.replace("may",'').str.replace(',','') \
+#    .str.replace('  ',' ').str.strip().str.split(' ')
+#    df2 = pd.DataFrame(temp.values.tolist()).replace('',None)
+#    k=df2.values.flatten()
+#    k=k[k!=None]
+#    return temp,pd.Series(k).unique()
+#
+#listeInfos,uniqueAl = getDifferentAllergie(products)
+#
+#def eq (l1,l2):
+#    result=[]
+#    for el in l2 : 
+#        if el in l1 : 
+#            result.append(True)
+#        else : result.append(False)      
+#    return result
+#
+#allergensMat = list(map(eq,listeInfos.values,[uniqueAl for i in range (len(listeInfos.values))]))
+#allergenDF = pd.DataFrame(allergensMat,index=listeInfos.index,columns=uniqueAl)
+#products=products.join(allergenDF)
+#del products['infos']
 
 
